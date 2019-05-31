@@ -62,28 +62,24 @@ var nextMove = [
     [0, 0, 0]
 ]
 
+
+//始まるとき、スピードを上げるためにとめるときに使う変数
+var sturt;
 //moveFlag = 0　操作ブロックが無い
 var moveFlag = 0;
-
 //keyFlag = 0 操作できる
 var keyFlag = 0;
-
 //gameOver = 1 gameOverになる
 var gameOver = 0;
-
 // 揃ったライン数を記録する
 var line = 0;
-
 // 時間をカウントする
 var timeCounter = 0;
-
 //最初にテトリミノを三つ作成する
 var BlockNo = [];
 for (var i = 0; i < 3; i++) {
     BlockNo[i] = Math.ceil(Math.random() * 7);
 }
-
-
 //元の色のarrayの配列を保存する
 var oldArray = [0, 0, 0, 0];
 //何回繰り返したか保存する
@@ -98,6 +94,16 @@ var point = 0;
 var difficulty = 0;
 //ブロックがIの字かどうか
 var blockI = 0;
+// 現在のスピード
+var speed = 0;
+//ホールドしているブロックを表す配列
+var holdBlockS = [0, 0];
+//ホールドした場合、genBlockの処理を飛ばすフラグ
+var genFlag = 0;
+// ホールドした場合、ブロックが落ちるまでホールドができなくなるためのフラグ
+var holdFlag = 0;
+// フィールドに動かせるブロックを記録
+var blockCount = 0;
 
 // 消去
 function deleteS() {
@@ -121,10 +127,10 @@ function deleteS() {
             point += 1;
             difficulty += 1;
             //10ラインごとにスピードアップして難易度を上げる
-            if ((difficulty % 10) == 0 && difficulty <= 90) {
+            if (difficulty > 10 && difficulty <= 90) {
+                if (speed < (difficulty / 10)){
                 setTimeout(function () {
                     clearInterval(sturt);
-                    level(difficulty / 10);
                     sturt = setInterval(function () {
                         if (masterFlag == 0) {
                             deleteS();
@@ -134,8 +140,11 @@ function deleteS() {
                             display();
                             gameEnd();
                         }
-                    }, 400 - difficulty * 3);
+                    }, 400 - speed * 30);
                 }, 1200)
+                level(speed * 10);
+                speed += 1;
+                }
             }
         }
     }
@@ -400,7 +409,6 @@ document.onkeydown = function (e) {
     display();
 }
 
-
 //回転
 function spinR() {
     moveS = [0, 0, 0, 0];
@@ -563,8 +571,6 @@ function spinL() {
         }
     }
 
-
-
     //もし壁の外側を取得していたら
     for (var i = 0; i < 4; i++) {
         if (newMove[i].includes(undefined)) {
@@ -667,14 +673,6 @@ function spinL() {
     }
 }
 
-
-
-
-
-
-
-
-
 //ハードドロップ
 function moveBlockHerd() {
     flag = 1;
@@ -719,6 +717,7 @@ function moveBlockRight() {
         }
     }
 }
+
 // 左
 function moveBlockLeft() {
     for (var i = 1; i < 20; i++) {
@@ -743,23 +742,29 @@ function moveBlockLeft() {
         }
     }
 }
+
 //下
 function moveBlockFall() {
     fall();
 }
 
-//ホールドしているブロックを表す配列
-var holdBlockS = [0, 0];
-//ホールドした場合、genBlockの処理を飛ばすフラグ
-var genFlag = 0;
-// ホールドした場合、ブロックが落ちるまでホールドができなくなるためのフラグ
-var holdFlag = 0;
 // ホールド
 function hold() {
-    console.log("hold "+holdFlag);
     if (holdFlag == 1) {
         return;
     }
+    blockCount = 0;
+    for (var i = 1; i < 20; i++) {
+        for (var j = 2; j < 11; j++) {
+            if (move[i][j] == 1) {
+                blockCount++;
+            }
+        }
+    }
+    if (blockCount == 0) {
+        return;
+    }
+
     holdMove = [
         [0, 0, 0],
         [0, 0, 0],
@@ -889,7 +894,7 @@ function hold() {
     }
     genBlock();
 }
-
+// ホールドしたブロックを表示する
 function holdBlock() {
     $('#holdBlock').find('tr').each(function (i, elemTr) {
         $(elemTr).children().each(function (j, elemTd) {
@@ -925,23 +930,6 @@ function holdBlock() {
         })
     });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //ブロックの設定
 function genBlock(blockNum) {
@@ -1300,10 +1288,6 @@ function gameOverEfect() {
     document.getElementById('game').classList.add('gameEnd')
 
 }
-
-
-
-var sturt;
 
 // 呼び出し処理
 display();
