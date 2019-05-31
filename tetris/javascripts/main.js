@@ -123,27 +123,27 @@ function deleteS() {
             setTimeout(function () {
                 display();
                 masterFlag = 0;
-            }, 1200);
+            }, 1250);
             point += 1;
             difficulty += 1;
             //10ラインごとにスピードアップして難易度を上げる
-            if (difficulty > 10 && difficulty <= 90) {
-                if (speed < (difficulty / 10)){
-                setTimeout(function () {
-                    clearInterval(sturt);
-                    sturt = setInterval(function () {
-                        if (masterFlag == 0) {
-                            deleteS();
-                            fall();
-                            genBlock();
-                            checkFlag();
-                            display();
-                            gameEnd();
-                        }
-                    }, 400 - speed * 30);
-                }, 1200)
-                level(speed * 10);
-                speed += 1;
+            if (difficulty >= 10 && difficulty <= 90) {
+                if (speed <= (difficulty / 10) && difficulty % 10 == 0) {
+                    speed++;
+                    level(speed);
+                    setTimeout(function () {
+                        clearInterval(sturt);
+                        sturt = setInterval(function () {
+                            if (masterFlag == 0) {
+                                deleteS();
+                                fall();
+                                genBlock();
+                                checkFlag();
+                                display();
+                                gameEnd();
+                            }
+                        }, 400 - speed * 30);
+                    }, 1200)
                 }
             }
         }
@@ -357,7 +357,6 @@ function fall() {
 // ブロック判定(move)を全て デフォルト値の0 または 動かせないブロックを意味する2 に変更
 function resetMove() {
     holdFlag = 0;
-    console.log("reset" + holdFlag)
     for (var i = 1; i < 20; i++) {
         for (var j = 1; j < 11; j++) {
             if (move[i][j] == 1 || move[i][j] == 2) {
@@ -402,7 +401,6 @@ document.onkeydown = function (e) {
             break;
         //spaceでホールド
         case "Space":
-            console.log("space");
             hold();
             break;
     }
