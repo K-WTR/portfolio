@@ -48,6 +48,13 @@ var move = [
     [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]//最下層のエリア判定
 ]
 
+var holdMove = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+]
+
 var nextMove = [
     [0, 0, 0],
     [0, 0, 0],
@@ -55,12 +62,6 @@ var nextMove = [
     [0, 0, 0]
 ]
 
-var nextMove2 = [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-]
 //moveFlag = 0　操作ブロックが無い
 var moveFlag = 0;
 
@@ -298,7 +299,6 @@ function level(level) {
     if (level == 9) {
         document.getElementById("level").innerHTML = "MAX";
     } else {
-        console.log(level);
         document.getElementById("level").innerHTML = level + 1;
     }
 }
@@ -347,6 +347,8 @@ function fall() {
 
 // ブロック判定(move)を全て デフォルト値の0 または 動かせないブロックを意味する2 に変更
 function resetMove() {
+    holdFlag = 0;
+    console.log("reset" + holdFlag)
     for (var i = 1; i < 20; i++) {
         for (var j = 1; j < 11; j++) {
             if (move[i][j] == 1 || move[i][j] == 2) {
@@ -389,9 +391,15 @@ document.onkeydown = function (e) {
         case "ArrowDown":
             moveBlockFall();
             break;
+        //spaceでホールド
+        case "Space":
+            console.log("space");
+            hold();
+            break;
     }
     display();
 }
+
 
 //回転
 function spinR() {
@@ -571,7 +579,6 @@ function spinL() {
         newMove[2] = [0, 0, 0, 0];
         blockIndexMin -= 1;
     }
-    console.log(blockIndexMin);
 
     while (newMove[0][0] == 0 || newMove[1][0] == 0 || newMove[2][0] == 0 || newMove[3][0] == 0) {
         if (newMove[0][0] == 1 || newMove[1][0] == 1 || newMove[2][0] == 1 || newMove[3][0] == 1) {
@@ -611,7 +618,6 @@ function spinL() {
             break;
         }
         if (i == 3) {
-            console.log(blockIndexMin);
             blockIndexMin -= 3;
         }
     }
@@ -623,7 +629,6 @@ function spinL() {
         if (i == 3) {
             blockIndexMin += 3;
             blockI = 1;
-            console.log("I" + blockI);
         }
     }
     //当てはめれるか
@@ -637,8 +642,6 @@ function spinL() {
             }
         }
     }
-
-    console.log(newMove);
     // Iの字のテトリミノなら、先に1の値を消しておく
     if (blockI == 1) {
         for (var i = moveIndex; i < 4 + moveIndex; i++) {
@@ -745,14 +748,213 @@ function moveBlockFall() {
     fall();
 }
 
+//ホールドしているブロックを表す配列
+var holdBlockS = [0, 0];
+//ホールドした場合、genBlockの処理を飛ばすフラグ
+var genFlag = 0;
+// ホールドした場合、ブロックが落ちるまでホールドができなくなるためのフラグ
+var holdFlag = 0;
+// ホールド
+function hold() {
+    console.log("hold "+holdFlag);
+    if (holdFlag == 1) {
+        return;
+    }
+    holdMove = [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
+    ]
+    if (holdBlockS[0] == 0) {
+        holdBlockS[0] = BlockNo[0];
+        switch (holdBlockS[0]) {
+            case 1:
+                holdMove[0][1] = 1;
+                holdMove[1][1] = 1;
+                holdMove[2][1] = 1;
+                holdMove[3][1] = 1;
+                holdBlock();
+                break;
+            case 2:
+                holdMove[2][0] = 2;
+                holdMove[2][1] = 2;
+                holdMove[3][0] = 2;
+                holdMove[3][1] = 2;
+                holdBlock();
+                break;
+            case 3:
+                holdMove[1][0] = 3;
+                holdMove[2][0] = 3;
+                holdMove[2][1] = 3;
+                holdMove[3][1] = 3;
+                holdBlock();
+                break;
+            case 4:
+                holdMove[1][1] = 4;
+                holdMove[2][1] = 4;
+                holdMove[2][0] = 4;
+                holdMove[3][0] = 4;
+                holdBlock();
+                break;
+            case 5:
+                holdMove[2][1] = 5;
+                holdMove[3][0] = 5;
+                holdMove[3][1] = 5;
+                holdMove[3][2] = 5;
+                holdBlock();
+                break;
+            case 6:
+                holdMove[1][0] = 6;
+                holdMove[1][1] = 6;
+                holdMove[2][0] = 6;
+                holdMove[3][0] = 6;
+                holdBlock();
+                break;
+            case 7:
+                holdMove[1][0] = 7;
+                holdMove[1][1] = 7;
+                holdMove[2][1] = 7;
+                holdMove[3][1] = 7;
+                holdBlock();
+                break;
+        }
+    } else {
+        holdBlockS[1] = BlockNo[0];
+        BlockNo[0] = holdBlockS[0];
+        holdBlockS[0] = holdBlockS[1];
+        genFlag = 1;
+        holdFlag = 1;
+        switch (holdBlockS[0]) {
+            case 1:
+                holdMove[0][1] = 1;
+                holdMove[1][1] = 1;
+                holdMove[2][1] = 1;
+                holdMove[3][1] = 1;
+                holdBlock();
+                break;
+            case 2:
+                holdMove[2][0] = 2;
+                holdMove[2][1] = 2;
+                holdMove[3][0] = 2;
+                holdMove[3][1] = 2;
+                holdBlock();
+                break;
+            case 3:
+                holdMove[1][0] = 3;
+                holdMove[2][0] = 3;
+                holdMove[2][1] = 3;
+                holdMove[3][1] = 3;
+                holdBlock();
+                break;
+            case 4:
+                holdMove[1][1] = 4;
+                holdMove[2][1] = 4;
+                holdMove[2][0] = 4;
+                holdMove[3][0] = 4;
+                holdBlock();
+                break;
+            case 5:
+                holdMove[2][1] = 5;
+                holdMove[3][0] = 5;
+                holdMove[3][1] = 5;
+                holdMove[3][2] = 5;
+                holdBlock();
+                break;
+            case 6:
+                holdMove[1][0] = 6;
+                holdMove[1][1] = 6;
+                holdMove[2][0] = 6;
+                holdMove[3][0] = 6;
+                holdBlock();
+                break;
+            case 7:
+                holdMove[1][0] = 7;
+                holdMove[1][1] = 7;
+                holdMove[2][1] = 7;
+                holdMove[3][1] = 7;
+                holdBlock();
+                break;
+            default:
+                $(elemTd).addClass("default");
+        }
+    }
+    for (var i = 1; i < 20; i++) {
+        for (var j = 1; j < 11; j++) {
+            if (move[i][j] == 1) {
+                array[i][j] = 0;
+                move[i][j] = 0;
+            }
+        }
+    }
+    genBlock();
+}
+
+function holdBlock() {
+    $('#holdBlock').find('tr').each(function (i, elemTr) {
+        $(elemTr).children().each(function (j, elemTd) {
+            $(elemTd).removeClass();
+            switch (holdMove[i][j]) {
+                case 1:
+                    $(elemTd).addClass("stickLightBlue");
+                    break;
+                case 2:
+                    $(elemTd).addClass("stickYellow");
+                    break;
+                case 3:
+                    $(elemTd).addClass("stickGreen");
+                    break;
+                case 4:
+                    $(elemTd).addClass("stickRed");
+                    break;
+                case 5:
+                    $(elemTd).addClass("stickPurple");
+                    break;
+                case 6:
+                    $(elemTd).addClass("stickBlue");
+                    break;
+                case 7:
+                    $(elemTd).addClass("stickOrange");
+                    break;
+                case 9:
+                    $(elemTd).addClass("stickBlock");
+                    break;
+                default:
+                    $(elemTd).addClass("default");
+            }
+        })
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //ブロックの設定
 function genBlock(blockNum) {
     //moveFlag .. (0 = 動かせるブロックが無い) (1 = 動かせるブロックがある)
     if (moveFlag == 0) {
-        for (var i = 0; i < 2; i++) {
-            BlockNo[i] = BlockNo[i + 1];
+        if (genFlag == 0) {
+            for (var i = 0; i < 2; i++) {
+                BlockNo[i] = BlockNo[i + 1];
+            }
+            BlockNo[2] = Math.ceil(Math.random() * 7);
+        } else {
+            genFlag = 0;
         }
-        BlockNo[2] = Math.ceil(Math.random() * 7);
         switch (BlockNo[0]) {
             case 1:
                 array[1][5] = 1;
@@ -1028,9 +1230,6 @@ function nextBlock() {
                 case 7:
                     $(elemTd).addClass("stickOrange");
                     break;
-                case 9:
-                    $(elemTd).addClass("stickBlock");
-                    break;
                 default:
                     $(elemTd).addClass("default");
             }
@@ -1063,9 +1262,6 @@ function nextBlock2() {
                     break;
                 case 7:
                     $(elemTd).addClass("stickOrange");
-                    break;
-                case 9:
-                    $(elemTd).addClass("stickBlock");
                     break;
                 default:
                     $(elemTd).addClass("default");
@@ -1113,7 +1309,7 @@ var sturt;
 display();
 nextBlock();
 nextBlock2();
-
+holdBlock();
 
 //ボタンを押したら始まる
 var button = document.querySelector("button");

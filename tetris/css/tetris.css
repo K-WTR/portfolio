@@ -15,16 +15,12 @@ body {
     padding-top:50px;
     background-color: #263238;
 }
-/* 各表示の親要素に対しての設定 */
-/* .left-ver > div , .left-ver > button, #game, .right-ver > table{
-    box-shadow: 3px 3px 4px rgba(0,0,0,1) ,inset 0 0 0 5px rgba(255,255,255,0.5);
-} */
 
 #game{
     box-shadow: 3px 3px 4px rgba(0,0,0,1) ,inset 0 0 0 5px rgba(255,255,255,0.5);
 }
 /* 左右のvarの子要素に対しての設定 */
-.left-ver > div, .left-ver > button, .right-ver *{
+.left-ver > div, .left-ver > button, .left-ver > table, .right-ver *{
     margin: 0 10px 20px 10px;
 }
 
@@ -43,8 +39,11 @@ td {
 /* 左のところ */
 .left-ver {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
-.left-ver > div , .left-ver > button {
+.left-ver > div, .left-ver > button {
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -55,9 +54,8 @@ td {
 
 .left-ver .operation {
     position: absolute;
-    display: block;
+    bottom: -20px;
     right: 0;
-    bottom: 0;
     display: flex;
     flex-direction: column;
     width: 400px;
