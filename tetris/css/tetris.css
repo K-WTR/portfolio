@@ -1,0 +1,103 @@
+@charset "utf-8";
+/* 共通部分 */
+* {
+    margin:0;
+    padding:0;
+    font-size:20px;
+    line-height: 1.5;
+    font-family: 'Press Start 2P', cursive;
+}
+/* 中身を横並びに */
+body {
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    padding-top:50px;
+    background-color: #263238;
+}
+/* 各表示の親要素に対しての設定 */
+/* .left-ver > div , .left-ver > button, #game, .right-ver > table{
+    box-shadow: 3px 3px 4px rgba(0,0,0,1) ,inset 0 0 0 5px rgba(255,255,255,0.5);
+} */
+
+#game{
+    box-shadow: 3px 3px 4px rgba(0,0,0,1) ,inset 0 0 0 5px rgba(255,255,255,0.5);
+}
+/* 左右のvarの子要素に対しての設定 */
+.left-ver > div, .left-ver > button, .right-ver *{
+    margin: 0 10px 20px 10px;
+}
+
+td {
+    background-color:white;
+    width: 35px; /* 横8マス */
+    height: 35px; /* 縦20マス */
+}
+
+#nextBlock2 td {
+    width: 25px;
+    height: 25px;
+}
+
+
+/* 左のところ */
+.left-ver {
+    position: relative;
+}
+.left-ver > div , .left-ver > button {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 200px;
+    height: 80px;
+    background-color:white;
+}
+
+.left-ver .operation {
+    position: absolute;
+    display: block;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: auto;
+    padding-left: 10px;
+}
+/* ブロックの画像設定 */
+.stickRed {
+    background-image:url("../img/redBlock.png");
+    background-size:contain;
+}
+.stickBlue{
+    background-image:url("../img/blueBlock.png");
+    background-size:contain;
+}
+.stickGreen{
+    background-image:url("../img/greenBlock.png");
+    background-size:contain;
+}
+.stickYellow{
+    background-image:url("../img/yellowBlock.png");
+    background-size:contain;
+}
+.stickPurple{
+    background-image:url("../img/purpleBlock.png");
+    background-size:contain;
+}
+.stickLightBlue{
+    background-image:url("../img/lightBlueBlock.png");
+    background-size:contain;
+}
+.stickOrange{
+    background-image:url("../img/orangeBlock.png");
+    background-size:contain;
+}
+.stickBlock{
+    background-image:url("../img/stickBlock2.png");
+    background-size:contain;
+}
+.default {
+    background-color: #455A64;
+    background-size:contain;
+}
